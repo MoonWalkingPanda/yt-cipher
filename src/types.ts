@@ -80,28 +80,12 @@ export interface ValidateSignatureResponse {
     };
 }
 
-export interface GetPlayerInfoRequest {
-    player_url: string;
+export interface GetHostFlagsRequest {
+    video_id: string;
 }
 
-export interface GetPlayerInfoResponse {
-    player_id: string;
-    version: string;
-    sts: string;
-    features: string[];
-    capabilities: {
-        signature_decryption: boolean;
-        n_parameter_decryption: boolean;
-        url_resolution: boolean;
-        adaptive_streaming: boolean;
-        hls_support: boolean;
-        dash_support: boolean;
-    };
-    url_info: {
-        domain: string;
-        path: string;
-        is_https: boolean;
-    };
+export interface HostFlagsResponse {
+    encrypted_host_flags: string;
 }
 
 export interface CacheStatsRequest {
@@ -259,8 +243,8 @@ export interface ServerConfig {
 }
 
 // Union types
-export type ApiRequest = SignatureRequest | StsRequest | ResolveUrlRequest | BatchDecryptRequest | ValidateSignatureRequest | GetPlayerInfoRequest | CacheStatsRequest | ClearCacheRequest;
-export type ApiResponseType = SignatureResponse | StsResponse | ResolveUrlResponse | BatchDecryptResponse | ValidateSignatureResponse | GetPlayerInfoResponse | CacheStatsResponse | ClearCacheResponse;
+export type ApiRequest = SignatureRequest | StsRequest | ResolveUrlRequest | BatchDecryptRequest | ValidateSignatureRequest | GetHostFlagsRequest | CacheStatsRequest | ClearCacheRequest;
+export type ApiResponseType = SignatureResponse | StsResponse | ResolveUrlResponse | BatchDecryptResponse | ValidateSignatureResponse | HostFlagsResponse | CacheStatsResponse | ClearCacheResponse;
 
 // Utility types
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';

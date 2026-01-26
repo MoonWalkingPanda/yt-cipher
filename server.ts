@@ -6,6 +6,7 @@ import { handleResolveUrl } from "./src/handlers/resolveUrl.ts";
 import { handleBatchDecrypt } from "./src/handlers/batchDecrypt.ts";
 import { handleValidateSignature } from "./src/handlers/validateSignature.ts";
 import { handleClearCache } from "./src/handlers/clearCache.ts";
+import { handleGetEncryptedHostFlags } from "./src/handlers/getEncryptedHostFlags.ts";
 import { composeMiddleware, type Next } from "./src/middleware.ts";
 import { withValidation } from "./src/validation.ts";
 import { registry, metricsCollector } from "./src/metrics.ts";
@@ -23,7 +24,7 @@ const config: ServerConfig = {
     port: parseInt(Deno.env.get("SERVER_PORT") || Deno.env.get("PORT") || "3000", 10),
     host: Deno.env.get("SERVER_IP") || Deno.env.get("SERVER_HOST") || "0.0.0.0",
     // for jexactyl   host: "0.0.0.0",
-    apiToken: Deno.env.get("API_TOKEN") || "YO_TOKEN",
+    apiToken: Deno.env.get("API_TOKEN") || "YOUR_API_TOKEN",
     rateLimit: {
         windowMs: parseInt(Deno.env.get("RATE_LIMIT_WINDOW_MS") || "60000", 10),
         maxRequests: parseInt(Deno.env.get("RATE_LIMIT_MAX_REQUESTS") || "999999999", 10),
@@ -177,7 +178,8 @@ async function baseHandler(req: Request): Promise<Response> {
 
         if (pathname.startsWith('/decrypt_signature') || pathname.startsWith('/get_sts') ||
             pathname.startsWith('/resolve_url') || pathname.startsWith('/batch_decrypt') ||
-            pathname.startsWith('/validate_signature') || pathname.startsWith('/clear_cache')) {
+            pathname.startsWith('/validate_signature') || pathname.startsWith('/clear_cache') ||
+            pathname.startsWith('/get_host_flags')) {
 
             const API_TOKEN = config.apiToken;
 
@@ -230,6 +232,9 @@ async function baseHandler(req: Request): Promise<Response> {
                 break;
             case '/clear_cache':
                 handler = handleClearCache;
+                break;
+            case '/get_host_flags':
+                handler = handleGetEncryptedHostFlags;
                 break;
             default:
                 updateRealTimeData(Date.now() - startTime, true);
@@ -625,7 +630,8 @@ function handleServerInfo(requestId: string): Response {
             metrics: true,
             rate_limiting: true,
             cors: true,
-            real_time_monitoring: true
+            real_time_monitoring: true,
+            get_host_flags: true
         },
         endpoints: {
             health: "/health",
@@ -638,7 +644,8 @@ function handleServerInfo(requestId: string): Response {
                 resolve_url: "POST /resolve_url",
                 batch_decrypt: "POST /batch_decrypt",
                 validate_signature: "POST /validate_signature",
-                clear_cache: "POST /clear_cache"
+                clear_cache: "POST /clear_cache",
+                get_host_flags: "POST /get_host_flags"
             }
         },
         configuration: {

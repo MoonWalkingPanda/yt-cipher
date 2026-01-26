@@ -24,6 +24,19 @@ export const openApiSpec = {
             }
         },
         schemas: {
+            GetHostFlagsRequest: {
+                type: "object",
+                required: ["video_id"],
+                properties: {
+                    video_id: { type: "string" }
+                }
+            },
+            HostFlagsResponse: {
+                type: "object",
+                properties: {
+                    encrypted_host_flags: { type: "string" }
+                }
+            },
             SignatureRequest: {
                 type: "object",
                 required: ["encrypted_signature", "player_url"],
@@ -366,6 +379,37 @@ export const openApiSpec = {
                             }
                         }
                     }
+                }
+            }
+        },
+        "/get_host_flags": {
+            post: {
+                summary: "Get Encrypted Host Flags",
+                description: "Fetches encryptedHostFlags from the YouTube embed page for a video.",
+                tags: ["Metadata"],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { "$ref": "#/components/schemas/GetHostFlagsRequest" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": {
+                        description: "Successful fetch",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    allOf: [
+                                        { "$ref": "#/components/schemas/StandardResponse" },
+                                        { type: "object", properties: { data: { "$ref": "#/components/schemas/HostFlagsResponse" } } }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": { description: "Flags not found", content: { "application/json": { schema: { "$ref": "#/components/schemas/ApiError" } } } }
                 }
             }
         },
