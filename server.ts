@@ -24,7 +24,7 @@ const config: ServerConfig = {
     port: parseInt(Deno.env.get("SERVER_PORT") || Deno.env.get("PORT") || "3000", 10),
     host: Deno.env.get("SERVER_IP") || Deno.env.get("SERVER_HOST") || "0.0.0.0",
     // for jexactyl   host: "0.0.0.0",
-    apiToken: Deno.env.get("API_TOKEN") || "YOUR_API_TOKEN",
+    apiToken: Deno.env.get("API_TOKEN") || "admin",
     rateLimit: {
         windowMs: parseInt(Deno.env.get("RATE_LIMIT_WINDOW_MS") || "60000", 10),
         maxRequests: parseInt(Deno.env.get("RATE_LIMIT_MAX_REQUESTS") || "999999999", 10),
